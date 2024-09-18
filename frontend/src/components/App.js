@@ -1,7 +1,12 @@
+import Header from "./Header"
+import Body from "./Body"
 
 function App() {
   return (
-    <div className="text-blue-500">App</div>
+    <>
+      <Header/>
+      <Body/>
+    </>
   )
 }
 
