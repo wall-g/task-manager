@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import TaskContainer from './TaskContainer'
 import { taskContainerType } from '../utils/enums'
-import { tasks } from '../utils/constant'
+import { tasks } from '../utils/url'
 import { DragDropContext } from 'react-beautiful-dnd'
 
 function Body() {
