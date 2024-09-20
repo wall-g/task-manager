@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
 import ques from '../resources/ques.svg'
+import { ADD_TODO_URL } from '../utils/url.js';
+import { taskContainerType } from '../utils/enums.js';
 
 const todoInitialValues = {
     title: '',
     description: '',
-    createdOn: new Date()
+    createdOn: new Date(),
+    type: taskContainerType.todo
 }
 
 function AddTodo() {
     const [todo, setTodo] = useState(todoInitialValues);
     const addTodo = async () => {
         try {
-            await fetch(ADD_QUESTION_URL, {
+            await fetch(ADD_TODO_URL, {
               method: 'POST',
-              body: JSON.stringify(question),
+              body: JSON.stringify(todo),
               headers: {
-                authorization: getAccessTocken(),
                 'Content-type': 'application/json; charset=UTF-8',
               }
             })

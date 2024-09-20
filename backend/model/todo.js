@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const todoSchema = mongoose.Schema({
-    id : {
+    title: {
         type: String,
         required: true
     },
-    title: {
+    description: {
         type: String,
         required: true
     },

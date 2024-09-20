@@ -12,7 +12,7 @@ function TaskContainer({ type, tasks }) {
             {
               tasks.map((task, index) => {
                 return (
-                  <Draggable key={task.id} draggableId={task.id} index={index}>
+                  <Draggable key={task._id} draggableId={task._id} index={index}>
                     {
                       (provided) => (
                          <Task  taskDetails={task} provided={provided}/> 
