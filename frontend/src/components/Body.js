@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react'
 import TaskContainer from './TaskContainer'
 import { taskContainerType } from '../utils/enums'
 import { DragDropContext } from 'react-beautiful-dnd'
-import { GET_TODOS } from '../utils/url.js'
+import { Link } from 'react-router-dom'
+import { getAccessTocken } from '../utils/common-utils'
+import { GET_TODOS_URL } from '../utils/url'
+import { UPDATE_TODO_URL } from '../utils/url'
+
 
 function Body() {
     const [todos, setTodos] = useState([]);
@@ -11,14 +15,18 @@ function Body() {
     }, []);
 
     async function getTodos() {
-        const data = await fetch(GET_TODOS);
-        const todos = await data.json();
-        setTodos(todos);
-    }
+        const accessToken = getAccessTocken();
+        if (accessToken) {
+            const userId = JSON.parse(atob(accessToken.split(' ')[1].split('.')[1]))._id;
+            const data = await fetch(`${GET_TODOS_URL}/${userId}`);
+            const todos = await data.json();
+            setTodos(todos);
+        }
+    }   
 
     async function updateTodo(item) {
         try {
-            const data = await fetch(`http://localhost:4000/updateTodo/${item._id}`, {
+            await fetch(`${UPDATE_TODO_URL}/${item._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8'
@@ -29,10 +37,6 @@ function Body() {
             console.log(error);
         }
     }
-
-    const toDo = todos.filter((el) => el.type === taskContainerType.todo);
-    const inProgress = todos.filter((el) => el.type === taskContainerType.inProgress);
-    const done = todos.filter((el) => el.type === taskContainerType.done);
 
     const handleDrag = (result) => {
         const { destination, draggableId } = result;
@@ -47,13 +51,15 @@ function Body() {
     return (
         <DragDropContext onDragEnd={handleDrag}>
             <div className='w-4/5 m-auto mt-8'>
-                <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mb-4">
-                    Add Task
-                </button>
+                <div className='mb-8'>
+                    <Link to='/addTodo' className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                        Add Task
+                    </Link>
+                </div>
                 <div className='grid grid-cols-3 gap-4 min-h-screen mb-8'>
-                    <TaskContainer type={taskContainerType.todo} tasks={toDo} />
-                    <TaskContainer type={taskContainerType.inProgress} tasks={inProgress} />
-                    <TaskContainer type={taskContainerType.done} tasks={done} />
+                    <TaskContainer type={taskContainerType.todo} tasks={todos} setTodos={setTodos}/>
+                    <TaskContainer type={taskContainerType.inProgress} tasks={todos} setTodos={setTodos}/>
+                    <TaskContainer type={taskContainerType.done} tasks={todos} setTodos={setTodos}/>
                 </div>
             </div>
         </DragDropContext>

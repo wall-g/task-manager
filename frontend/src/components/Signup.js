@@ -34,20 +34,21 @@ function Signup({ setShowRegister }) {
                     if (!res.ok) {
                         throw new Error('Something went wrong')
                     }
-                    return res.json();
+                    setShowRegister(false);
                 })
 
                 toast.promise(
                     apiPromise,
                     {
                         pending: 'Please wait',
-                        success: 'Successfully registered',
+                        success: 'Successfully registered. Please login',
                         error: 'Something went wrong'
                     },
                     {
                         pauseOnHover: false,
                         position: 'top-center',
-                        closeOnClick: true
+                        closeOnClick: true,
+                        autoClose: 3000
                     }
                 );
             } catch (error) {

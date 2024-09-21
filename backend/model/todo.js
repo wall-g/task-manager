@@ -16,6 +16,10 @@ const todoSchema = mongoose.Schema({
     createdOn: {
         type: String,
         required: true
+    },
+    userId: {
+        type: String,
+        required: true
     }
 })
 

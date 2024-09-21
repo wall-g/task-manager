@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import useValidation from '../hooks/useValidation';
 import { LOGIN_URL } from '../utils/url';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom'
 
 const loginInitialValues = {
     email: '',
@@ -12,6 +13,8 @@ function Login({ setShowRegister }) {
     const [loginValues, setLoginValues] = useState(loginInitialValues);
     const [formErrors, setFormErrors] = useState({});
     const validate = useValidation(setFormErrors);
+    const navigate = useNavigate();
+
 
     const onValueChange = (e) => {
         const { name, value } = e.target;
@@ -22,38 +25,37 @@ function Login({ setShowRegister }) {
         const errors = validate(loginValues);
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
-            const apiPromise = fetch(LOGIN_URL, {
+            const response = await fetch(LOGIN_URL, {
                 method: 'POST',
                 body: JSON.stringify(loginValues),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 }
-            }).then((res) => {
-                if (!res.ok) {
-                    throw new Error('Something went wrong')
-                }
-                return res.json();
             })
-
-            toast.promise(
-                apiPromise,
-                {
-                    pending: 'Please wait',
-                    success: 'Login successful',
-                    error: 'Something went wrong'
-                },
-                {
+            const json = await response.json();
+            if (response.status === 200) {
+                sessionStorage.setItem('accessToken', `Bearer ${json.accessToken}`);
+                sessionStorage.setItem('refreshToken', `Bearer ${json.refreshToken}`);
+                toast.success('Login successful', {
                     pauseOnHover: false,
                     position: 'top-center',
-                    closeOnClick: true
-                }
-            );
+                    closeOnClick: true,
+                    autoClose: 3000
+                });
+                navigate('/');
+            }else {
+                toast.error('something went wrong', {
+                    pauseOnHover: false,
+                    position: 'top-center',
+                    closeOnClick: true,
+                    autoClose: 3000
+                });
+            }
         }
     }
 
     return (
         <>
-
             <p className='text-txt text-sm  mb-1 font-semibold'>Email</p>
             <input className="appearance-none block w-full bg-white text-gray-700 border-2 border-gray-200 rounded py-2 px-2 text-sm leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="email" type="sentence" onChange={(e) => onValueChange(e)}></input>
             <p className='text-red-500 text-xs mb-4'>{formErrors.email}</p>
