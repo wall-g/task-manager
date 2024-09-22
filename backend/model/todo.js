@@ -6,8 +6,7 @@ const todoSchema = mongoose.Schema({
         required: true
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     type: {
         type: String,

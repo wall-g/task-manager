@@ -1,6 +1,11 @@
 import todo from "../model/todo.js"
+import { todoSchema } from "../utils/validation_schema.js";
 
 export const addTodo = async (request, response) => {
+    const { error } = todoSchema.validate(request.body);
+    if (error) {
+        return response.status(400).json({ msg: error.details[0].message });
+    }
     try {
         const newTodo = new todo(request.body);
         await newTodo.save();
@@ -20,6 +25,10 @@ export const getAllTodos = async (request, response) => {
 }
 
 export const updateTodo = async (request, response) => {
+    const { error } = todoSchema.validate(request.body);
+    if (error) {
+        return response.status(400).json({ msg: error.details[0].message });
+    }
     try {
         const toDo = await todo.findById(request.params.id);
         if (!toDo) {

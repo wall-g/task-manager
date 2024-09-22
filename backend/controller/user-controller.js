@@ -5,10 +5,15 @@ import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import oauth2client from "../utils/googleConfig.js";
 import oauthUser from "../model/oauthUser.js";
+import { userValidationSchema } from "../utils/validation_schema.js";
 
 dotenv.config()
 
 export const signupUser = async (request, response) => {
+    const { error } = userValidationSchema.validate(request.body);
+    if (error) {
+        return response.status(400).json({ msg: error.details[0].message });
+    }
     try {
         const hashedPassword = await bcrypt.hash(request.body.password, 10);
         const user = { username: request.body.username, email: request.body.email, password: hashedPassword };
