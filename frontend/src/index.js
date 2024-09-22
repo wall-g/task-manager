@@ -9,12 +9,15 @@ import Header from './components/Header';
 import Error from './components/Error';
 import Protected from './components/Protected';
 import EditTodo from './components/EditTodo';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function AppLayout() {
     return (
         <>
             <Header />
-            <Protected Component={Outlet}/>
+            <GoogleOAuthProvider clientId='990753456544-5en61esrpticqognd1v4b09duculerk9.apps.googleusercontent.com'>
+                <Protected Component={Outlet}/>
+            </GoogleOAuthProvider>
             <ToastContainer />
         </>
     )

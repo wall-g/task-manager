@@ -4,7 +4,7 @@ import { ADD_TODO_URL } from '../utils/url.js';
 import { taskContainerType } from '../utils/enums.js';
 import { getAccessTocken } from '../utils/common-utils.js';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 const todoInitialValues = {
     title: '',
@@ -29,6 +29,7 @@ function AddTodo() {
                 method: 'POST',
                 body: JSON.stringify(todo),
                 headers: {
+                    authorization: accessToken,
                     'Content-type': 'application/json; charset=UTF-8',
                 }
             })
@@ -42,7 +43,7 @@ function AddTodo() {
                 navigate('/');
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
     const handleTodo = (e) => {

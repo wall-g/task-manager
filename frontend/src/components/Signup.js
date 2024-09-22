@@ -9,7 +9,7 @@ const signupInitialValues = {
     password: ''
 }
 
-function Signup({ setShowRegister }) {
+function Signup({ setShowRegister, setIsLoading }) {
     const [signupValues, setSignupValues] = useState(signupInitialValues);
     const [formErrors, setFormErrors] = useState({});
     const validate = useValidation(setFormErrors);
@@ -24,6 +24,7 @@ function Signup({ setShowRegister }) {
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
             try {
+                setIsLoading(true);
                 const apiPromise = fetch(SIGNUP_URL, {
                     method: 'POST',
                     body: JSON.stringify(signupValues),
@@ -32,9 +33,11 @@ function Signup({ setShowRegister }) {
                     }
                 }).then((res) => {
                     if (!res.ok) {
+                        setIsLoading(false);
                         throw new Error('Something went wrong')
                     }
                     setShowRegister(false);
+                    setIsLoading(false);
                 })
 
                 toast.promise(
@@ -52,7 +55,8 @@ function Signup({ setShowRegister }) {
                     }
                 );
             } catch (error) {
-                console.log(error);
+                setIsLoading(false);
+                console.error(error);
             }
         }
     }

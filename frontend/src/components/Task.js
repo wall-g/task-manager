@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { DELETE_TODO_URL } from '../utils/url';
 import { toast } from 'react-toastify';
+import { getAccessTocken } from '../utils/common-utils';
 
 function Task({ taskDetails, provided, deleteTodoById }) {
   const navigate = useNavigate();
+  const accessToken = getAccessTocken();
 
   const handleDelete = async () => {
     deleteTodoById(taskDetails._id);
@@ -13,6 +15,7 @@ function Task({ taskDetails, provided, deleteTodoById }) {
       await fetch(`${DELETE_TODO_URL}/${taskDetails._id}`, {
         method: 'DELETE',
         headers: {
+          authorization: accessToken,
           'Content-Type': 'application/json; charset=UTF-8'
         }
       })
@@ -23,7 +26,7 @@ function Task({ taskDetails, provided, deleteTodoById }) {
         autoClose: 3000
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

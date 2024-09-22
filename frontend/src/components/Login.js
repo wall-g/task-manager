@@ -9,7 +9,7 @@ const loginInitialValues = {
     password: ''
 }
 
-function Login({ setShowRegister }) {
+function Login({ setShowRegister, setIsLoading }) {
     const [loginValues, setLoginValues] = useState(loginInitialValues);
     const [formErrors, setFormErrors] = useState({});
     const validate = useValidation(setFormErrors);
@@ -25,6 +25,7 @@ function Login({ setShowRegister }) {
         const errors = validate(loginValues);
         setFormErrors(errors);
         if (Object.keys(errors).length === 0) {
+            setIsLoading(true);
             const response = await fetch(LOGIN_URL, {
                 method: 'POST',
                 body: JSON.stringify(loginValues),
@@ -33,6 +34,7 @@ function Login({ setShowRegister }) {
                 }
             })
             const json = await response.json();
+            setIsLoading(false);
             if (response.status === 200) {
                 sessionStorage.setItem('accessToken', `Bearer ${json.accessToken}`);
                 sessionStorage.setItem('refreshToken', `Bearer ${json.refreshToken}`);
@@ -43,7 +45,7 @@ function Login({ setShowRegister }) {
                     autoClose: 3000
                 });
                 navigate('/');
-            }else {
+            } else {
                 toast.error('something went wrong', {
                     pauseOnHover: false,
                     position: 'top-center',
